@@ -117,22 +117,14 @@
                     <div class="modal-body">
                         <!-- Add your form fields for adding a new task -->
                         <div class="form-group">
-                            <label for="addTitle">Title</label>
-                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="addTitle" name="title" required>
-                            @error('title')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
+                            <label for="addtitle">Title</label>
+                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="addtitle" name="title" required>
+                            <div class="invalid-title-error text-danger"></div>
                         </div>
                         <div class="form-group">
-                            <label for="addDescription">Description</label>
-                            <textarea class="form-control @error('description') is-invalid @enderror" id="addDescription" name="description" rows="3" required></textarea>
-                            @error('description')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
+                            <label for="adddescription">Description</label>
+                            <textarea class="form-control @error('description') is-invalid @enderror" id="adddescription" name="description" rows="3" required></textarea>
+                            <div class="invalid-description-error text-danger"></div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -211,15 +203,15 @@
                         if (error.status === 422) {
                             var errors = error.responseJSON.errors;
                             // Reset previous error states
-                            $('.form-control').removeClass('is-invalid');
-                            $('.invalid-feedback').empty();
+                            $('#addTaskForm').find('.form-control').removeClass('is-invalid');
+                            $('#addTaskForm').find('.invalid-feedback').empty();
 
                             // Display validation errors
                             for (var field in errors) {
                                 if (errors.hasOwnProperty(field)) {
                                     var errorMessage = errors[field][0];
-                                    $('#' + field).addClass('is-invalid');
-                                    $('#' + field + '-error').text(errorMessage);
+                                    $('#addTaskForm').find('#add' + field).addClass('is-invalid');
+                                    $('#addTaskForm').find('.invalid-' + field + '-error').text(errorMessage);
                                 }
                             }
                         }
@@ -281,5 +273,26 @@
                     }
             });
         });
+
+        // Function to fetch and display a new quote
+        function syncAPI() {
+            $.ajax({
+                url: "{{ route('tasks.sync') }}", // The route to your quote-fetching controller method
+                method: 'GET',
+                success: function (response) {
+                    // Update your HTML element with the fetched quote
+                    console.log("API has been called");
+                },
+                error: function () {
+                    console.error('Error fetching quote');
+                }
+            });
+        }
+
+        // Fetch a quote immediately on page load
+        syncAPI();
+
+        // Fetch a new quote every 5 minutes
+        setInterval(syncAPI, 5 * 60 * 1000); // 5 minutes in milliseconds
     </script>
 @endsection
