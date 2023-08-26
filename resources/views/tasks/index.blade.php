@@ -282,15 +282,13 @@
                 success: function (response) {
                     // Update your HTML element with the fetched quote
                     console.log("API has been called");
+                    location.reload();
                 },
                 error: function () {
                     console.error('Error fetching quote');
                 }
             });
         }
-
-        // Fetch a quote immediately on page load
-        syncAPI();
 
         // Fetch a new quote every 5 minutes
         setInterval(syncAPI, 5 * 60 * 1000); // 5 minutes in milliseconds
